@@ -33,7 +33,11 @@ public class AuthService(ECommerceDbContext context, JwtService jwt)
         {
             Name = dto.Name,
             Email = dto.Email,
-            PasswordHash = PasswordHasher.Hash(dto.Password)
+            PasswordHash = PasswordHasher.Hash(dto.Password),
+            UserRoles = new List<UserRole>
+            {
+                new UserRole { RoleId = 2 }
+            }
         };
 
         _dbContext.Users.Add(user);

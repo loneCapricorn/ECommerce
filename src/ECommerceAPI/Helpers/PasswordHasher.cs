@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace ECommerceAPI.Helpers;
 
-public class PasswordHasher
+public static class PasswordHasher
 {
     public static string Hash(string password)
     {

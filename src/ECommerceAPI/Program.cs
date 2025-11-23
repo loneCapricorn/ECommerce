@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using ECommerceAPI.Data;
 using ECommerceAPI.Services;
+using ECommerceAPI.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,13 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
+
+// ensure the roles are generated
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ECommerceDbContext>();
+    DatabaseSeeder.SeedRoles(db);
+}
 
 // Configure the HTTP request pipeline.
 if (isDevelopment)
