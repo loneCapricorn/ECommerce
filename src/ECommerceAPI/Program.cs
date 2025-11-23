@@ -1,23 +1,53 @@
 using DotNetEnv;
-using ECommerceAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using ECommerceAPI.Data;
+using ECommerceAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// determine environment
 bool isDevelopment = builder.Environment.IsDevelopment();
 
+// load .env files
 Env.Load(isDevelopment ? ".env.local" : ".env");
 
-var connectionString = Environment.GetEnvironmentVariable("ECOMMERCE_CONNECTION_STRING");
+// add env vars into Config
+builder.Configuration.AddEnvironmentVariables();
 
-// Add services to the container.
+// read environment variables
+var connectionString = builder.Configuration["ECOMMERCE_CONNECTION_STRING"];
+var jwtKey = builder.Configuration["JWT_KEY"];
+var jwtIssuer = builder.Configuration["JWT_ISSUER"];
+var jwtAudience = builder.Configuration["JWT_AUDIENCE"];
 
+// register DbContext
+builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
+
+// JWT Authentication
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)
+            )
+        };
+    });
+
+// Add services
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
@@ -28,6 +58,7 @@ if (isDevelopment)
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
