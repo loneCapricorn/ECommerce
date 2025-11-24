@@ -1,16 +1,10 @@
-using System;
-
-using ECommerceAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using ECommerceAPI.Models;
 
 namespace ECommerceAPI.Data;
 
-public class ECommerceDbContext : DbContext
+public class ECommerceDbContext(DbContextOptions dbContextOptions) : DbContext(dbContextOptions)
 {
-    public ECommerceDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
-    {
-    }
-
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
