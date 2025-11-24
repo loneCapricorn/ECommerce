@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
 using ECommerceAPI.Models;
 using ECommerceAPI.Services;
 
 namespace ECommerceAPI.Controllers
+
 {
     [ApiController]
     [Route("api/[controller]")]
