@@ -29,8 +29,9 @@ public class AuthService(ECommerceDbContext context, JwtService jwt)
         if (await _dbContext.Users.AnyAsync(u => u.Email == dto.Email))
             return false;
 
-        // get role matching "Customer"
-        var customerRole = await _dbContext.Roles.FirstAsync(r => r.Name == "Customer");
+        // get role matching "User"
+        var userRole = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+        if (userRole == null) return false;
 
         var user = new User
         {
@@ -39,7 +40,7 @@ public class AuthService(ECommerceDbContext context, JwtService jwt)
             PasswordHash = PasswordHasher.Hash(dto.Password),
             UserRoles = new List<UserRole>
             {
-                new UserRole { RoleId = customerRole.RoleId }
+                new UserRole { RoleId = userRole.RoleId }
             }
         };
 

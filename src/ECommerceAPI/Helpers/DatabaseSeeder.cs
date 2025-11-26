@@ -11,7 +11,7 @@ public static class DatabaseSeeder
         {
             dbContext.Roles.AddRange(
                 new Role { Name = "Admin" },
-                new Role { Name = "Customer" }
+                new Role { Name = "User" }
             );
 
             dbContext.SaveChanges();

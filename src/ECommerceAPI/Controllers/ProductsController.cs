@@ -29,7 +29,7 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> Create(Product product)
         {
             var created = await _productService.Create(product);
-            return Ok(created);
+            return CreatedAtAction(nameof(Get), new { id = created.ProductId }, created);
         }
 
         [Authorize(Roles = "Admin")]
