@@ -9,13 +9,13 @@ public class CategoryService(ECommerceDbContext context)
     private readonly ECommerceDbContext _dbContext = context;
 
     public async Task<List<Category>> GetAll() =>
-        await _dbContext.Categories
+        await _dbContext.Categories.AsNoTracking()
             .Include(c => c.ProductCategories)
                 .ThenInclude(pc => pc.Product)
             .ToListAsync();
 
     public async Task<Category?> GetById(int id) =>
-        await _dbContext.Categories
+        await _dbContext.Categories.AsNoTracking()
             .Include(c => c.ProductCategories)
                 .ThenInclude(pc => pc.Product)
             .FirstOrDefaultAsync(c => c.CategoryId == id);

@@ -45,7 +45,7 @@ public class OrderService(ECommerceDbContext context)
     }
 
     public async Task<List<Order>> GetOrdersByUser(int userId) =>
-        await _dbContext.Orders
+        await _dbContext.Orders.AsNoTracking()
             .Where(o => o.UserId == userId)
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
