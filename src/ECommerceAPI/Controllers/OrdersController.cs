@@ -18,7 +18,14 @@ namespace ECommerceAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(CreateOrderDto dto)
         {
-            int userId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+            var userIdString =
+                User.FindFirstValue(JwtRegisteredClaimNames.Sub) ??
+                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                User.FindFirstValue("id");
+
+            if (!int.TryParse(userIdString, out int userId))
+                return Unauthorized("User ID claim is missing or invalid.");
+
             var order = await _orderService.CreateOrder(userId, dto);
             return Ok(order);
         }
@@ -26,7 +33,14 @@ namespace ECommerceAPI.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> GetMyOrders()
         {
-            int userId = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+            var userIdString =
+                User.FindFirstValue(JwtRegisteredClaimNames.Sub) ??
+                User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                User.FindFirstValue("id");
+
+            if (!int.TryParse(userIdString, out int userId))
+                return Unauthorized("User ID claim is missing or invalid.");
+
             var orders = await _orderService.GetOrdersByUser(userId);
             return Ok(orders);
         }

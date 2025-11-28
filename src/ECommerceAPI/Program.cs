@@ -54,7 +54,29 @@ builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<OrderService>();
 
+// prevents the serializer from entering loops and simply ignores repeated references.
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+
+
+// Register CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SpecificOrigin", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowCredentials()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
+
+// Use CORS
+app.UseCors("SpecificOrigin");
 
 // ensure the roles are generated
 using (var scope = app.Services.CreateScope())
