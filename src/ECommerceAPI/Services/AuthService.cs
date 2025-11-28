@@ -14,7 +14,8 @@ public class AuthService(ECommerceDbContext context, JwtService jwt)
     public async Task<string?> Login(LoginDto dto)
     {
         var user = await _dbContext.Users
-            .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null || !PasswordHasher.Verify(dto.Password, user.PasswordHash))
