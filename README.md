@@ -134,7 +134,7 @@ dotnet run --project src/ECommerceAPI
 Visit Swagger UI in development at:
 
 ```
-https://localhost:5252/swagger/index.html
+http://localhost:5252/swagger/index.html
 ```
 
 Role seeding runs automatically on startup (see `DatabaseSeeder.SeedRoles`).

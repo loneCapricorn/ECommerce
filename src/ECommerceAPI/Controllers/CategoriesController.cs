@@ -24,7 +24,6 @@ namespace ECommerceAPI.Controllers
             return Ok(category);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
@@ -32,7 +31,6 @@ namespace ECommerceAPI.Controllers
             return CreatedAtAction(nameof(Get), new { id = created.CategoryId }, created);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
